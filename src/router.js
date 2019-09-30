@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Board from './layouts/board.vue'
-import Main from './views/main.vue'
+import MainPage from "./views/MainPage";
 
 Vue.use(Router)
 
@@ -21,7 +21,7 @@ export default new Router({
         {
           path: '/main',
           name: 'main',
-          component: Main
+          component: MainPage
         }
       ]
     },
