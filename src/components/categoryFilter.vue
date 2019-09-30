@@ -19,8 +19,9 @@
 <script>
     export default {
         name: "categoryFilter",
-        props: {
-            // category: [],
+        props: [],
+        data: function() {
+            return {}
         },
         computed: {
             category: {

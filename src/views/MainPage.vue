@@ -9,14 +9,15 @@
                 <div @click="sort='desc'" :class="{'active': sort==='desc'}" class="sort">내림차순</div>
             </div>
         </div>
-        <div class="body">
-            <List></List>
-            <Advertisement></Advertisement>
-        </div>
         <!-- test -->
         <button @click="testBtn()" class="btn btn-danger">test button</button>
         <button @click="test2Btn()" class="btn btn-danger">test2 button</button>
         <!-- test -->
+
+        <div class="body">
+            <List v-for="item in list" :key="item.no" :item="item"></List>
+            <Advertisement></Advertisement>
+        </div>
 
         <!-- modal -->
         <div v-if="isShowModal" class="modal-container">
@@ -53,6 +54,11 @@
                 set: function(str) {
                     this.$store.dispatch('setSort', str);
                 }
+            },
+            list: {
+                get: function() {
+                    return this.$store.state.list;
+                }
             }
         },
         methods: {
@@ -67,48 +73,19 @@
                 // getList().then((val) => {
                 //     console.log(val);
                 // });
+                this.$store.dispatch('getList');
             },
             test2Btn() {
-                console.log('category', this.category);
+                // console.log('category', this.category);
+                // console.log('list', this.list);
+                // console.log(this.$moment());
             }
         },
         created: function() {
             this.$store.dispatch('getCategory');
+            this.$store.dispatch('getList');
         }
     }
-    // testApi().then((val) => {
-    //     console.log(val);
-    // });
-    // axios.get('http://comento.cafe24.com/category.php').then((val) => {
-    //     console.log(val);
-    // })
-    // 0:
-    // name: "apple"
-    // no: "1"
-    // __proto__: Object
-    // 1:
-    // name: "banana"
-    // no: "2"
-    // __proto__: Object
-    // 2:
-    // name: "coconut"
-    // no: "3"
-    // axios.get('http://comento.cafe24.com/request.php', {
-    //     params: {
-    //         page: 1,
-    //         ord: 'asc',
-    //         category: [1]
-    //     }
-    // }).then((val) => {
-    //     console.log(val);
-    // })
-    // axios.get('http://comento.cafe24.com/detail.php', {
-    //     params: {
-    //         req_no: 1,
-    //     }
-    // }).then((val) => {
-    //     console.log(val);
-    // })
 </script>
 
 <style scoped lang="less">

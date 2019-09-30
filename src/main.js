@@ -10,6 +10,16 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
 Vue.use(BootstrapVue);
 // bootstrap
 
+// moment
+import moment from 'moment';
+import VueMomentJs from 'vue-momentjs';
+Vue.use(VueMomentJs, moment);
+// moment
+
+// filter
+import './filters/custom';
+// filter
+
 Vue.config.productionTip = false;
 
 new Vue({

@@ -5,15 +5,16 @@ const service = axios.create({
     timeout: 5000
 })
 
-export function getList() {
+export function apiGetList(params) {
     return service({
         url: 'request.php',
         method: 'get',
-        params: {
-            page: 1,
-            ord: 'asc',
-            category: [1]
-        },
+        params: params,
+        // params: {
+        //     page: 1,
+        //     ord: 'asc',
+        //     category: [1]
+        // },
     })
 }
 
