@@ -2,8 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Board from './layouts/board.vue'
 import MainPage from "./views/MainPage";
+import DetailPage from "./views/DetailPage";
 // test
-import CategoryFilter from './components/categoryFilter'
+// import CategoryFilter from './components/categoryFilter'
 
 Vue.use(Router)
 
@@ -24,6 +25,11 @@ export default new Router({
           path: '/main',
           name: 'main',
           component: MainPage
+        },
+        {
+          path: '/detail/:no',
+          name: 'detail',
+          component: DetailPage
         }
       ]
     },

@@ -8,7 +8,10 @@
 <script>
     export default {
         name: "board",
-
+        created: function() {
+            this.$store.dispatch('getCategory');
+            this.$store.dispatch('getList');
+        }
     }
 </script>
 

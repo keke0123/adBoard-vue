@@ -2,6 +2,10 @@
     <div class="container">
         <!-- 여기서 전부 조합 예정 -->
         <div>main page</div>
+        <!-- test -->
+        <!--        <button @click="testBtn()" class="btn btn-danger">test button</button>-->
+        <!--        <button @click="test2Btn()" class="btn btn-danger">test2 button</button>-->
+        <!-- test -->
         <div class="head">
             <button @click="toggleModal('show')" class="btn btn-primary">필터</button>
             <div class="head-right">
@@ -9,14 +13,13 @@
                 <div @click="sort='desc'" :class="{'active': sort==='desc'}" class="sort">내림차순</div>
             </div>
         </div>
-        <!-- test -->
-        <button @click="testBtn()" class="btn btn-danger">test button</button>
-        <button @click="test2Btn()" class="btn btn-danger">test2 button</button>
-        <!-- test -->
-
-        <div class="body">
-            <List v-for="item in list" :key="item.no" :item="item"></List>
-            <Advertisement></Advertisement>
+        <div ref="scopeScroll" class="body">
+            <template v-for="(item, index) in list">
+                <div :key="index">
+                    <List v-if="item.type === 'list'" :item="item"></List>
+                    <Advertisement v-if="item.type === 'ads'" :item="item"></Advertisement>
+                </div>
+            </template>
         </div>
 
         <!-- modal -->
@@ -32,6 +35,9 @@
     import List from '../components/list';
     import Advertisement from "../components/advertisement";
     import CategoryFilter from "../components/categoryFilter";
+    // 임시
+    // import axios from 'axios';
+    import { apiGetAds } from "../api/request";
 
     export default {
         name: "main-page",
@@ -39,6 +45,11 @@
             List,
             Advertisement,
             CategoryFilter,
+        },
+        data: function() {
+            return {
+                scrollFlag: null,
+            }
         },
         computed: {
             isShowModal() {
@@ -57,7 +68,9 @@
             },
             list: {
                 get: function() {
-                    return this.$store.state.list;
+                    // return this.$store.state.list;
+                    // console.log(this.$store.getters.boardList);
+                    return this.$store.getters.boardList;
                 }
             }
         },
@@ -69,21 +82,42 @@
                     this.$store.dispatch('closeModal');
                 }
             },
-            testBtn() {
-                // getList().then((val) => {
-                //     console.log(val);
-                // });
-                this.$store.dispatch('getList');
-            },
-            test2Btn() {
-                // console.log('category', this.category);
-                // console.log('list', this.list);
-                // console.log(this.$moment());
+            scrollHandle(event) {
+                // 이벤트 버블링 막기 위해서 이벤트 지연시킴
+                if(this.scrollFlag !== null) {
+                    clearTimeout(this.scrollFlag);
+                }
+                this.scrollFlag = setTimeout(() => {
+                    // console.log('event', event);
+                    console.log('window', window);
+                    console.log('ref', this.$refs);
+                    console.log('document', document.body.scrollTop);
+                    const height = window.innerHeight;
+                    const offsetY = window.scrollY;
+                    console.log('height', height);
+                    console.log('window', offsetY);
+                    if(offsetY >= height) {
+                        this.$store.dispatch('getList');
+                    }
+                    this.scrollFlag = null;
+                }, 500);
             }
+            // testBtn() {
+            //     // getList().then((val) => {
+            //     //     console.log(val);
+            //     // });
+            //     this.$store.dispatch('getList');
+            // },
+            // test2Btn() {
+            //     // apiGetAds();
+            //     console.log(this.$store.state.category);
+            // }
         },
         created: function() {
-            this.$store.dispatch('getCategory');
-            this.$store.dispatch('getList');
+            window.addEventListener('scroll', this.scrollHandle);
+        },
+        destroyed: function() {
+            window.removeEventListener('scroll', this.scrollHandle);
         }
     }
 </script>
@@ -109,6 +143,10 @@
                 }
             }
         }
+    }
+
+    .body {
+        /*overflow-y: scroll;*/
     }
 
     .modal-container {

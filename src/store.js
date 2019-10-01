@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {apiGetCategory, apiGetList} from './api/request'
+import {apiGetAds, apiGetCategory, apiGetList} from './api/request'
 
 Vue.use(Vuex)
 
@@ -11,9 +11,22 @@ export default new Vuex.Store({
         sort: 'asc', // 오름차순: asc / 내림차순: desc
         list: [],
         page: 1,
+        ads: [],
     },
     getters: {
-        showModal: state => state.isShowModal
+        showModal: state => state.isShowModal,
+        boardList: (state) => {
+            let array = state.list.slice();
+            let adsCount = state.ads.length < Math.floor(((state.page-1) * 10) / 4) ? state.ads.length : Math.floor(((state.page-1) * 10) / 4);
+            for(let i=adsCount; i>0; i--) {
+                array.splice(i*4, 0, state.ads[i-1]);
+            }
+            return array;
+        },
+        detailList: (state) => (no) => {
+            // console.log(no);
+            return state.list.find(value => value.no == no);
+        }
     },
     mutations: {
         // modal
@@ -46,6 +59,12 @@ export default new Vuex.Store({
         resetList(state) {
           state.list = [];
           state.page = 1;
+          //ads
+            state.ads = [];
+        },
+        // ads
+        setAds(state, array) {
+            state.ads = array;
         },
     },
     actions: {
@@ -79,12 +98,15 @@ export default new Vuex.Store({
           dispatch('getList');
         },
         // list
-        getList({commit, state}) {
-            let category = state.category.map((val) => {
-                // console.log(val);
-                return parseInt(val.no);
-            });
-            // console.log(category);
+        getList({commit, state, dispatch}) {
+            let category = state.category
+                .filter((val) => {
+                    return val.checked === true;
+                })
+                .map((val) => {
+                    return parseInt(val.no);
+                });
+            // console.log('category', category);
             const params = {
                 page: state.page,
                 ord: state.sort,
@@ -95,6 +117,7 @@ export default new Vuex.Store({
                     // console.log(val.data);
                     let result = val.data.list.reduce(({result}, value) => {
                         // console.log(value);
+                        value.type = 'list';
                         let index = result.findIndex((val) => {
                             return val.no === value.no
                         });
@@ -106,6 +129,33 @@ export default new Vuex.Store({
                     commit('setList', result.result);
                     commit('pageUp');
                 });
+            if(state.page % 2 > 0) {
+                dispatch('getAds');
+            }
+        },
+        // ads
+        getAds({commit, state}) {
+            // 20 이 4, 10 의 공배수니 list page 가 2 일때 5개 받아오는 방식이 좋겠다.
+            // console.log('get ads');
+            const params = {
+                page: Math.floor(state.page/2)+1,
+                limit: 5,
+            }
+            apiGetAds(params)
+                .then((val) => {
+                    let result = val.data.list.reduce(({result}, value) => {
+                        value.type = 'ads';
+                        let index = result.findIndex((val) => {
+                            return val.no === value.no;
+                        });
+                        if(index < 0) {
+                            result.push(value);
+                        }
+                        return {result};
+                    }, {result: state.ads});
+                    // console.log('val', result.result);
+                    commit('setAds', result.result);
+                })
         },
     }
 })

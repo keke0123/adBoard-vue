@@ -25,6 +25,14 @@ export function apiGetCategory() {
     })
 }
 
+export function apiGetAds(params) {
+    return service({
+        url: 'ads.php',
+        method: 'get',
+        params: params,
+    })
+}
+
 //http://54.180.32.46/words
 export function testApi() {
     return service({
