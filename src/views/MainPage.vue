@@ -13,7 +13,7 @@
                 <div @click="sort='desc'" :class="{'active': sort==='desc'}" class="sort">내림차순</div>
             </div>
         </div>
-        <div ref="scopeScroll" class="body">
+        <div class="body">
             <template v-for="(item, index) in list">
                 <div :key="index">
                     <List v-if="item.type === 'list'" :item="item"></List>
@@ -35,9 +35,6 @@
     import List from '../components/list';
     import Advertisement from "../components/advertisement";
     import CategoryFilter from "../components/categoryFilter";
-    // 임시
-    // import axios from 'axios';
-    import { apiGetAds } from "../api/request";
 
     export default {
         name: "main-page",
@@ -82,21 +79,17 @@
                     this.$store.dispatch('closeModal');
                 }
             },
-            scrollHandle(event) {
+            scrollHandle() {
                 // 이벤트 버블링 막기 위해서 이벤트 지연시킴
                 if(this.scrollFlag !== null) {
                     clearTimeout(this.scrollFlag);
                 }
                 this.scrollFlag = setTimeout(() => {
-                    // console.log('event', event);
-                    console.log('window', window);
-                    console.log('ref', this.$refs);
-                    console.log('document', document.body.scrollTop);
-                    const height = window.innerHeight;
-                    const offsetY = window.scrollY;
-                    console.log('height', height);
-                    console.log('window', offsetY);
-                    if(offsetY >= height) {
+                    const scrollY = window.scrollY;
+                    const innerHeight = window.innerHeight;
+                    const scrollHeight = document.documentElement.scrollHeight;
+
+                    if(scrollHeight == scrollY + innerHeight) {
                         this.$store.dispatch('getList');
                     }
                     this.scrollFlag = null;
