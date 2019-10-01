@@ -33,7 +33,7 @@
             }
         },
         created: function() {
-            console.log('list', this.list);
+            // console.log('list', this.list);
             // console.log('router', this.$route);
         }
     }

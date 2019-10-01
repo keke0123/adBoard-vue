@@ -29,7 +29,7 @@
                 get: function() {
                     return this.$store.state.category;
                 },
-                set: function(newValue) {
+                set: function() {
                     // console.log('new', newValue);
                 }
             }

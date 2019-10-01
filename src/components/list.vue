@@ -29,7 +29,7 @@
                 return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD');
             },
             moveDetailPage() {
-                console.log('go detail page');
+                // console.log('go detail page');
                 this.$router.push(`/detail/${this.item.no}`);
             },
         },
