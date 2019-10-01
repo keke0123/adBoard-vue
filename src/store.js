@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {apiGetAds, apiGetCategory, apiGetList} from './api/request'
+import {apiGetAds, apiGetCategory, apiGetDetail, apiGetList} from './api/request'
 
 Vue.use(Vuex)
 
@@ -12,6 +12,7 @@ export default new Vuex.Store({
         list: [],
         page: 1,
         ads: [],
+        detail: {},
     },
     getters: {
         showModal: state => state.isShowModal,
@@ -23,10 +24,10 @@ export default new Vuex.Store({
             }
             return array;
         },
-        detailList: (state) => (no) => {
-            // console.log(no);
-            return state.list.find(value => value.no == no);
-        }
+        // detailList: (state) => (no) => {
+        //     // console.log(no);
+        //     return state.list.find(value => value.no == no);
+        // }
     },
     mutations: {
         // modal
@@ -66,6 +67,10 @@ export default new Vuex.Store({
         setAds(state, array) {
             state.ads = array;
         },
+        // detail
+        setDetail(state, object) {
+            state.detail = object;
+        }
     },
     actions: {
         // modal
@@ -156,6 +161,13 @@ export default new Vuex.Store({
                     // console.log('val', result.result);
                     commit('setAds', result.result);
                 })
+        },
+        // detail
+        getDetail({commit}, no) {
+            apiGetDetail(no).then((val) => {
+                // console.log(val);
+                commit('setDetail', val.data.detail);
+            })
         },
     }
 })

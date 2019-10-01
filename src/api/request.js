@@ -33,11 +33,12 @@ export function apiGetAds(params) {
     })
 }
 
-//http://54.180.32.46/words
-export function testApi() {
+export function apiGetDetail(no) {
     return service({
-        url: 'words',
+        url: 'detail.php',
         method: 'get',
-    });
-    // return axios.get('http://54.180.32.46/words');
+        params: {
+            req_no: no
+        }
+    })
 }
